@@ -8,7 +8,7 @@ sql/
 config.js
 
 # needed packages
-api/package-lock.json
-api/package.json
+src/api/package-lock.json
+src/api/package.json
 
 *.sass
