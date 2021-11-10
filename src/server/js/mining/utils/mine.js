@@ -8,7 +8,7 @@ export function crackMD5Nonce(nonce) {
         .update((nonce + solution).toString()).end()
         .digest('hex');
 
-        if (attempt.substr(0, 5) === '00000') {
+        if (attempt.substr(0, 6) === '000000') {
             console.log(`⛏ finished mining: ${solution}`);
 
             return solution;
