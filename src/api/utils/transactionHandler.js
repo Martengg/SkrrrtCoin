@@ -3,10 +3,13 @@ import { createTransactionUuid, createMiningUuid } from "./uuidHandler.js";
 import { checkSKRTWithPublicKey, privateAndPublicKeysMatching, publicKeyIsValid, sendSKRT } from "./walletHandler.js";
 import { pushToChain } from "./chainHandler.js";
 
-const nonceBrackets = 20;
-
 
 export async function checkTransaction(sender, privateKey, receiver, amount, currency) {
+    // check if the user entered a valid number
+    if (amount <1) {
+        return false;
+    }
+
     // check if the receiver-keys is correct
     if ( !await publicKeyIsValid(receiver)) {
         return false;
@@ -29,67 +32,15 @@ export async function checkTransaction(sender, privateKey, receiver, amount, cur
 
 
 export async function setupTransactionMine(sender, receiver, amount, currency) {
-    console.log("4")
-    //create a uuid for the transaction
-    const transactionUuid = await createTransactionUuid();
+    // set the uuid
+    const newTransactionUuid = await createMiningUuid();
 
-    // set the nonces to mine
-    const nonceUuidString = await setupNonceBreakdown();
+    // create new mining-job
+    await pushToDatabase("INSERT INTO `mining_jobs` VALUES (?, ?, ?, ?)", [ newTransactionUuid, Math.round(Math.random() * 999999999), new Date().getTime(), 1 ]);
 
     // push the data in the transaction-"cache"
-    await pushToDatabase("INSERT INTO transactions_in_progress VALUES (?, ?, ?, ?, ?, ?)", [ transactionUuid, sender, receiver, amount, currency, nonceUuidString ]);
-}
-
-
-export async function setupNonceBreakdown() {
-    let nonceUuids = "";
-
-    // loop this so often, until all nonce-brackets have been created
-    for (let i = 0; i <nonceBrackets; i++) {
-        // set the uuid
-        const newMiningUuid = await createMiningUuid();
-
-        console.log("5")
-
-        // add the uuid to the "string-list"
-        nonceUuids += newMiningUuid;
-
-        // create new mining-job
-        await pushToDatabase("INSERT INTO `mining_jobs` VALUES (?, ?, ?, ?)", [ newMiningUuid, Math.round(Math.random() * 999999999), new Date().getTime(), 1 ]);
-    }
-
-    return nonceUuids;
-}
-
-
-export async function verifyBracketSolution(miningJobUuid) {
-    // try to fetch the transaction-uuid from the miningJobUuid
-    const allTransactionsInProgress = await fetchAllFromDb("SELECT uuid, nonce_uuids FROM transactions_in_progress", []);
-    console.log(allTransactionsInProgress)
-
-    for (let i = 0; i < allTransactionsInProgress.length; i++) {
-        console.log(allTransactionsInProgress[i])
-        if (allTransactionsInProgress[i]["nonce_uuids"].includes(miningJobUuid)) {
-            console.log("6")
-
-            // set the fetched values up
-            let { nonce_uuids: nonceUuids } = allTransactionsInProgress[i];
-            const { uuid: transactionUuid } = allTransactionsInProgress[i];
-
-            // remove the nonce-uuid thats finished
-            nonceUuids.replace(/miningJobUuid/g, ""); // doesnt work
-
-            if (nonceUuids !== "") {
-                await pushToDatabase("UPDATE transactions_in_progress SET nonce_uuids = ? WHERE uuid = ?", [ nonceUuids, transactionUuid ]);
-                return;
-            }
-
-            console.log("7")
-
-            await pushTransactionToBlockChain(transactionUuid);
-            return;
-        }
-    }
+    await pushToDatabase("INSERT INTO transactions_in_progress VALUES (?, ?, ?, ?, ?)", [ newTransactionUuid, sender, receiver, amount, currency ]);
+    return;
 }
 
 
@@ -98,14 +49,13 @@ export async function pushTransactionToBlockChain(transactionUuid) {
     const data = await fetchOneFromDb("SELECT sender, receiver, amount, currency FROM transactions_in_progress WHERE uuid = ?", [ transactionUuid ]);
 
     // set the new id
-    let idData = await fetchOneFromDb("SELECT id FROM blockchain WHERE id = ?", [ "( SELECT MAX(id) FROM blockchain )" ]);
-    const newId = 0;
+    let idData = await fetchOneFromDb("SELECT id FROM blockchain WHERE id = ( SELECT MAX(id) FROM blockchain )", []);
+    let newId = 0;
     
-    if (idData["id"]) {
-        newId = idData["id"] +1;
+    // check if there is any block in the blockchain existing right now
+    if (idData) {
+        newId = parseInt(idData["id"]) +1;
     }
-
-    console.log("8")
 
     // push the data to the blockchain
     await pushToChain(newId, data["sender"], data["receiver"], data["amount"], data["currency"]);
@@ -117,10 +67,10 @@ export async function pushTransactionToBlockChain(transactionUuid) {
 
 
 export async function finishTransaction(transactionUuid, sender, receiver, amount, currency) {
+    // check if skrt is suppost to get sent
     if (currency === "skrt") {
         await sendSKRT(sender, receiver, amount);
     }
-    console.log("9")
 
     await removeTransactionInProgress(transactionUuid);
     return;
@@ -128,7 +78,6 @@ export async function finishTransaction(transactionUuid, sender, receiver, amoun
 
 
 export async function removeTransactionInProgress(transactionUuid) {
-    console.log("10")
     await pushToDatabase("DELETE FROM transactions_in_progress WHERE uuid = ?", [ transactionUuid ]);
     return;
 }

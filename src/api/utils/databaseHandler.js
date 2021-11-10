@@ -1,7 +1,7 @@
 import mysql from "mysql";
 import { promisify } from "util";
 import { user, password, host, port, database } from "../settings/config.js";
-import { checkJobAvailability } from "./miningJobController.js";
+import { checkJobAvailability } from "./miningHandler.js";
 import { createPublicKey, createPrivateKey, hashPrivateKey } from "./uuidHandler.js";
 
 const conn = mysql.createConnection({
@@ -101,10 +101,14 @@ export async function receiveNextMiningJob() {
         realJob = false;
     }
 
-    console.log(uuid, nonceToMine, realJob)
-
     // delete the job from the database
     await removeMiningJob(uuid);
+
+    // check if the job was taken
+    if(await execSql("SELECT uuid FROM jobs_in_progress WHERE uuid = ?", [ uuid ], "one")) {
+        await receiveNextMiningJob();
+        return;
+    }
 
     // give the mining-job to the waiting queue
     await setMiningJobInProgress(uuid, nonceToMine, realJob);
@@ -145,11 +149,9 @@ export async function fetchNonceFromUuid(uuid, inProgress) {
 
         return nonce;
     }
-    console.log(uuid)
 
     const nonceData = await fetchOneFromDb("SELECT nonce_to_mine FROM `jobs_in_progress` WHERE uuid = ?", [ uuid ]);
 
-    console.log(nonceData)
     if (nonceData) {
         if (nonceData["nonce_to_mine"]) {
             return nonceData["nonce_to_mine"];

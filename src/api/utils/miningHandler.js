@@ -3,12 +3,12 @@ import { pushToDatabase, fetchOneFromDb, checkRemainingMiningJobs, removeMiningJ
 import { createSKRT } from "./walletHandler.js";
 import { createMiningUuid } from "./uuidHandler.js";
 import { sleep } from "./timeHandler.js";
-import { verifyBracketSolution } from "./transactionHandler.js";
+import { pushTransactionToBlockChain, } from "./transactionHandler.js";
 
 
 async function receiveEarnings(publicKey) {
-    const maxEarnings = 13;
-    const minEarnings = 4;
+    const maxEarnings = 5;
+    const minEarnings = 2;
 
     const earning = Math.floor(Math.random() * (maxEarnings - minEarnings + 1)) + minEarnings;
 
@@ -53,7 +53,7 @@ export async function checkMiningResult(uuid, solution, publicKey) {
 
     const result = hash.digest('hex');
     
-    if (result.substr(0, 5) !== '00000') {
+    if (result.substr(0, 6) !== '000000') {
         // lock the post-connection for 30 seconds
         await sleep(30_000);
         return false;
@@ -64,7 +64,7 @@ export async function checkMiningResult(uuid, solution, publicKey) {
 
     // finish the transaction if there was one
     if (wasRealData["real_job"] === 1 || wasRealData["real_job"] === true) {
-        await verifyBracketSolution(uuid);
+        await pushTransactionToBlockChain(uuid);
     }
 
     // remove the mining-job and give the user his earnings

@@ -35,7 +35,7 @@
                 Balance
             </a>
 
-            <a class="nav-item" href="/send">
+            <a class="nav-item" href="/transaction">
                 Transaction
             </a>
 
@@ -80,7 +80,7 @@
         <div class="show-transaction-success disabled">
             <div class="info">
                 <h1 class="warning">Transaction finished</h1>
-                the transaction of <span class="send-coins"></span> from <span class="show-sender"></span> to <br>
+                the transaction of <span class="sent-coins"></span> from <span class="show-sender"></span> to <br>
                 <span class="show-receiver"></span> was successfull and gets mined, verified and finished soon...
             </div>
         </div>
@@ -108,9 +108,13 @@
                             return;
                         }                         
 
-                        $('.show-balance').removeClass("disabled");
-                        $('.balance').addClass("disabled");
+                        $('.show-transaction-success').removeClass("disabled");
+                        $('.transaction').addClass("disabled");
                         $('.show-error').addClass("disabled");
+
+                        document.getElementsByClassName("sent-coins")[0].innerHTML = `SKRT ${document.getElementById('amount').value}`;
+                        document.getElementsByClassName("show-sender")[0].innerHTML = document.getElementById('sender').value;
+                        document.getElementsByClassName("show-receiver")[0].innerHTML = document.getElementById('receiver').value;
                         return;
                    }
                 });

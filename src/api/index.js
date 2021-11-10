@@ -3,7 +3,7 @@ import compression from "compression";
 import express from "express";
 import bodyParser from "body-parser";
 import { join, resolve } from "path";
-import { checkMiningResult, createNewMiningJobs } from "./utils/miningJobController.js";
+import { checkMiningResult, createNewMiningJobs } from "./utils/miningHandler.js";
 import { createNewUser, receiveNextMiningJob, userNameExists } from "./utils/databaseHandler.js";
 import { checkUserName, checkEMail } from "./utils/userHandler.js";
 import { checkSKRT } from "./utils/walletHandler.js";
@@ -43,8 +43,8 @@ app.get('/balance', function (req, res) {
 });
 
 
-app.get('/send', function (req, res) {
-    res.sendFile(join(__dirname, "/html/send.html"));
+app.get('/transaction', function (req, res) {
+    res.sendFile(join(__dirname, "/html/transaction.html"));
 });
 
 
@@ -169,7 +169,7 @@ app.post('/api/mine/finish/skrt', async (req, res) => {
 
 
 // run the server
-httpServer.listen(port, () => console.info(`Express server running on port ${port}...`));
+httpServer.listen(port, () => console.info(`SkrrrtCoin API running on port ${port}...`));
 
 // create new mining-jobs on startup
 (async () => {
