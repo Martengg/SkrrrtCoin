@@ -1,0 +1,14 @@
+# Dependency directories
+node_modules/
+
+# sql-setup
+sql/
+
+# configuration
+config.js
+
+# needed packages
+api/package-lock.json
+api/package.json
+
+*.sass
