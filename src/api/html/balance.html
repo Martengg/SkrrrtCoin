@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="/static/global.min.css">
+    <link rel="shortcut icon" type="image/png" href="/static/favicon.png"/>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    
+    <title>SkrrrtCoin - Balance</title>
+</head>
+<body>
+    <div class="navbar">
+        <a class="logo">
+            SkrrrtCoin
+        </a>
+
+        <div class="navigation">
+            <a class="nav-item" href="/">
+                Home
+            </a>
+
+            <a class="nav-item" href="/price">
+                Price
+            </a>
+
+            <a class="nav-item" href="/register">
+                Register
+            </a>
+
+            <a class="nav-item" href="/balance">
+                Balance
+            </a>
+
+            <a class="nav-item" href="/send">
+                Transaction
+            </a>
+
+            <a class="nav-item" href="/ranklist">
+                Ranklist
+            </a>
+        </div>
+    </div>
+
+    <div class='balance-main'>
+        <div class='balance'>
+            <h2>Balance</h2>
+            <p>enter your information to get your balance</p>
+
+            <section class='balance-wrapper'>
+                <div class='balance-item show-error disabled'>
+                    the information seems to be wrong! please double check what u are typin'
+                </div>
+
+                <div class='balance-item'>
+                    <input type='text' placeholder='UrUsrName' id='name'/>
+                </div>
+
+                <div class='balance-item'>
+                    <input type='password' placeholder='ur private key' id='private-key'/>
+                </div>
+            </section>
+
+            <div class='button-section'>
+                <button class="balance-button" onClick="postBalanceCheck()">check balance</button>
+            </div>
+        </div>
+
+        <div class="show-balance disabled">
+            <div class="info">
+                <h1 class="warning">Your Balance</h1>
+                you seem to have whole <span class="skrt-balance"></span>
+            </div>
+        </div>
+
+        <script>
+            function postBalanceCheck() {
+                // POST the data
+                $.ajax({
+                   type: "POST",
+                   url: "/api/balance",
+                   data: `username=${document.getElementById('name').value}&private_key=${document.getElementById('private-key').value}`,
+
+                   success: function (response) {
+                       // check if the request was successfull
+                        if (!response.succeeded) {
+                            $('.show-balance').addClass("disabled");
+                            $('.balance').removeClass("disabled");
+                            $('.show-error').removeClass("disabled");
+                            return;
+                        }                         
+
+                        $('.show-balance').removeClass("disabled");
+                        $('.balance').addClass("disabled");
+                        $('.show-error').addClass("disabled");
+                        
+                        document.getElementsByClassName("skrt-balance")[0].innerHTML = `SKRT ${response.skrt}`;
+                        return;
+                   }
+                });
+            }
+        </script>
+    </div>
+</body>
+</html>
