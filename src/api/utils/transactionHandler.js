@@ -1,5 +1,5 @@
 import { pushToDatabase, fetchOneFromDb, fetchAllFromDb } from "./databaseHandler.js";
-import { createTransactionUuid, createMiningUuid } from "./uuidHandler.js";
+import { createMiningUuid } from "./uuidHandler.js";
 import { checkSKRTWithPublicKey, privateAndPublicKeysMatching, publicKeyIsValid, sendSKRT } from "./walletHandler.js";
 import { pushToChain } from "./chainHandler.js";
 
@@ -37,6 +37,35 @@ export async function setupTransactionMine(sender, receiver, amount, currency) {
 
     // create new mining-job
     await pushToDatabase("INSERT INTO `mining_jobs` VALUES (?, ?, ?, ?)", [ newTransactionUuid, Math.round(Math.random() * 999999999), new Date().getTime(), 1 ]);
+
+    // create transaction-log
+    const lastTransactionEntry = await fetchOneFromDb("SELECT time, transactions FROM transactions_per_hour WHERE time = ( SELECT MAX(time) FROM transactions_per_hour )", []);
+    const lastMovedCoinsEntry = await fetchOneFromDb("SELECT time, moved_coins FROM moved_coins_per_hour WHERE time = ( SELECT MAX(time) FROM moved_coins_per_hour )", []);
+
+    // if these are both true the row gets updated
+    if (lastTransactionEntry && lastMovedCoinsEntry) {
+        const time = new Date(lastTransactionEntry["time"]);
+
+        // check if it's the same hour than this hour
+        if (time.getHours() === new Date().getHours() && time.getDate() === new Date().getDate() 
+           && time.getMonth() === new Date().getMonth() && time.getYear() === new Date().getYear()) {
+            await pushToDatabase("UPDATE transactions_per_hour SET transactions = ? WHERE time = ?", 
+                                [ lastTransactionEntry["transactions"] +1, lastTransactionEntry["time"] ]);
+            
+            await pushToDatabase("UPDATE moved_coins_per_hour SET moved_coins = ? WHERE time = ( SELECT MAX(time) FROM moved_coins_per_hour )", 
+                                [ lastMovedCoinsEntry["moved_coins"] + amount, lastMovedCoinsEntry["time"] ]);
+        }
+    }
+    
+    // insert a new row to the logging-table
+    else {
+        await pushToDatabase("INSERT INTO transactions_per_hour VALUES (?, ?)", 
+                            [ new Date(), 1 ]);
+            
+        await pushToDatabase("INSERT INTO moved_coins_per_hour VALUES (?, ?)", 
+                            [ new Date(), 1 ]);
+    }
+    
 
     // push the data in the transaction-"cache"
     await pushToDatabase("INSERT INTO transactions_in_progress VALUES (?, ?, ?, ?, ?)", [ newTransactionUuid, sender, receiver, amount, currency ]);

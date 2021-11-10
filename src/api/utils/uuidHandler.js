@@ -18,21 +18,6 @@ export async function createMiningUuid() {
 }
 
 
-export async function createTransactionUuid() {
-    const uuid = uuidv4();
-    const allTableUuids = await fetchAllFromDb("SELECT uuid FROM `transactions_in_progress`", [])
-
-    // check if any uuid is equal to this one
-    if (allTableUuids) {
-        while (uuid in allTableUuids) {
-            uuid = uuidv4();
-        }
-    }
-
-    return uuid;
-}
-
-
 export async function createPublicKey() {
     const publicKey = uuidv4();
     const allDatabasePublicKeys = await fetchAllFromDb("SELECT public_key FROM `wallets`", [])

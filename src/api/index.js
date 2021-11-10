@@ -9,6 +9,8 @@ import { checkUserName, checkEMail } from "./utils/userHandler.js";
 import { checkSKRT } from "./utils/walletHandler.js";
 import { checkTransaction, setupTransactionMine } from "./utils/transactionHandler.js";
 import { fetchChain } from "./utils/chainHandler.js";
+import { fetchSKRTValue } from "./utils/chartHandler.js";
+import { fetchRanklist } from "./utils/rankHandler.js";
 
 // set the values for the http-server up
 const app = express();
@@ -28,8 +30,8 @@ app.get('/', function (req, res) {
 });
 
 
-app.get('/price', function (req, res) {
-    res.sendFile(join(__dirname, "/html/price.html"));
+app.get('/value', function (req, res) {
+    res.sendFile(join(__dirname, "/html/value.html"));
 });
 
 
@@ -48,8 +50,9 @@ app.get('/transaction', function (req, res) {
 });
 
 
-app.get('/ranklist', function (req, res) {
-    res.sendFile(join(__dirname, "/html/ranklist.html"));
+app.get('/ranklist', async function (req, res) {
+    res.status(200).json(await fetchRanklist());
+    // res.sendFile(join(__dirname, "/html/ranklist.html"));
 });
 
 // api
@@ -114,15 +117,12 @@ app.post('/api/transaction', async (req, res) => {
     privateKey = privateKey.substr(0, 36);
     receiver = receiver.substr(0, 36);
     amount = parseInt(amount);
-    console.log("2")
 
     // check if all the data is valid
     if (!await checkTransaction(sender, privateKey, receiver, amount, currency)) {
-        console.log("error1")
         res.status(200).json({ succeeded: false }).end();
         return;
     }
-    console.log("3")
 
     // if everything is valid setup the mining for the transaction
     await setupTransactionMine(sender, receiver, amount, currency);
@@ -136,6 +136,23 @@ app.post('/api/transaction', async (req, res) => {
 // this currently doesn't work :c
 app.get('/api/chain', async (req, res) => {
     res.status(200).json(await fetchChain()).end();
+    return;
+});
+
+
+app.get('/api/ranklist', async (req, res) => {
+    res.status(200).json(await fetchRanklist()).end();
+    return;
+});
+
+
+// get the value of SKRT
+app.get('/api/value/skrt', async function (req, res) {
+    // fetch the value from skrt
+    const valueOverTime = await fetchSKRTValue();
+
+    // respond to user
+    res.status(200).json({ succeeded: true, values: valueOverTime }).end();
     return;
 });
 

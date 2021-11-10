@@ -190,14 +190,14 @@ export async function createNewUser(userName, eMail, rankList) {
     const hashedPrivateKey = hashPrivateKey(privateKey);
 
     // set the rank-list boolean
-    if (rankList) {
-        rankList = 1;
+    if (rankList === "on") {
+        rankList = true;
     } else {
-        rankList = 0;
+        rankList = false;
     }
 
     await execSql("INSERT INTO wallets VALUES (?, ?, ?, ?, ?, 0)", 
-    [ userName, eMail, rankList, publicKey, hashedPrivateKey ]);
+                 [ userName, eMail, rankList, publicKey, hashedPrivateKey ]);
 
     return { publicKey, privateKey };
 }

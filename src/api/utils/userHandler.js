@@ -20,6 +20,7 @@ export async function checkUserName(userName) {
     return true;
 }
 
+
 export function checkEMail(eMail) {
     // check if the email is a string
     if (typeof eMail !== "string") {

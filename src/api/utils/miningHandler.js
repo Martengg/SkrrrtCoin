@@ -67,6 +67,27 @@ export async function checkMiningResult(uuid, solution, publicKey) {
         await pushTransactionToBlockChain(uuid);
     }
 
+    // create transaction-log
+    const lastMiningEntry = await fetchOneFromDb("SELECT time, minings FROM minings_per_hour WHERE time = ( SELECT MAX(time) FROM minings_per_hour )", []);
+
+    // if these are both true the row gets updated
+    if (lastMiningEntry) {
+        const time = new Date(lastMiningEntry["time"]);
+
+        // check if it's the same hour than this hour
+        if (time.getHours() === new Date().getHours() && time.getDate() === new Date().getDate() 
+           && time.getMonth() === new Date().getMonth() && time.getYear() === new Date().getYear()) {
+            await pushToDatabase("UPDATE minings_per_hour SET minings = ? WHERE time = ?", 
+                                [ lastMiningEntry["minings"] +1, lastMiningEntry["time"] ]);
+        }
+    }
+    
+    // insert a new row to the logging-table
+    else {
+        await pushToDatabase("INSERT INTO minings_per_hour VALUES (?, ?)", 
+                            [ new Date(), 1 ]);
+    }
+
     // remove the mining-job and give the user his earnings
     await removeMiningJobInProgress(uuid);
     await receiveEarnings(publicKey);
