@@ -9,7 +9,7 @@ export async function sendSKRT(sender, receiver, amount) {
     }
 
     // check if the sender has enough skrt in his wallet
-    if (parseInt(await checkSKRTWithPublicKey(sender)) < amount) {
+    if (await checkSKRTWithPublicKey(sender) < amount) {
         return false;
     }
 

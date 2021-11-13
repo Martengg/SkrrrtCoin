@@ -6,7 +6,7 @@ target/
 sql/
 
 # configuration
-config.js
+settings/
 
 # dependency files
 src/api/package-lock.json
@@ -16,3 +16,9 @@ Cargo.toml
 
 # styling
 *.sass
+
+# jquery
+jquery-3.6.0.min.js
+
+# tests that are currently in debugging
+value.html

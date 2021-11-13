@@ -8,7 +8,7 @@
     <link rel="stylesheet" type="text/css" href="/static/global.min.css">
     <link rel="shortcut icon" type="image/png" href="/static/favicon.png"/>
 
-    <script src="/static/js/jquery-3.6.0.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     
     <title>SkrrrtCoin - Balance</title>
 </head>
@@ -73,7 +73,7 @@
             </section>
 
             <div class='button-section'>
-                <button class="transaction-button">send coins</button>
+                <button class="transaction-button" onClick="postTransaction()">send coins</button>
             </div>
         </div>
 
@@ -85,7 +85,41 @@
             </div>
         </div>
 
-        <script src="/static/js/transaction.js"></script>
+        <script>
+            function postTransaction() {
+                // POST the data
+                $.ajax({
+                    type: "POST",
+                    url: "/api/transaction",
+                    data:
+                        `sender=${document.getElementById('sender').value}\
+                        &private_key=${document.getElementById('private-key').value}\
+                        &receiver=${document.getElementById('receiver').value}\
+                        &amount=${document.getElementById('amount').value}\
+                        &currency=skrt`,
+
+                    success: function (response) {
+                        // check if the request was successfull
+                        console.log(response)
+                        if (!response.succeeded) {
+                            $('.show-balance').addClass("disabled");
+                            $('.balance').removeClass("disabled");
+                            $('.show-error').removeClass("disabled");
+                            return;
+                        }                         
+
+                        $('.show-transaction-success').removeClass("disabled");
+                        $('.transaction').addClass("disabled");
+                        $('.show-error').addClass("disabled");
+
+                        document.getElementsByClassName("sent-coins")[0].innerHTML = `SKRT ${document.getElementById('amount').value}`;
+                        document.getElementsByClassName("show-sender")[0].innerHTML = document.getElementById('sender').value;
+                        document.getElementsByClassName("show-receiver")[0].innerHTML = document.getElementById('receiver').value;
+                        return;
+                   }
+                });
+            }
+        </script>
     </div>
 </body>
 </html>

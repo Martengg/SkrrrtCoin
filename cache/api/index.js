@@ -1,10 +1,8 @@
-import https from "https";
+import http from "http";
 import compression from "compression";
-import helmet from "helmet";
 import express from "express";
 import bodyParser from "body-parser";
 import { join, resolve } from "path";
-import { readFileSync } from "fs"; 
 import { checkMiningResult, createNewMiningJobs } from "./utils/miningHandler.js";
 import { createNewUser, receiveNextMiningJob, userNameExists } from "./utils/databaseHandler.js";
 import { checkUserName, checkEMail } from "./utils/userHandler.js";
@@ -14,56 +12,47 @@ import { fetchChain } from "./utils/chainHandler.js";
 import { fetchSKRTValue } from "./utils/chartHandler.js";
 import { fetchRanklist } from "./utils/rankHandler.js";
 
-// set the directory
-const __dirname = resolve();
-
-// ssl-certificate
-const privateKey = readFileSync("/etc/letsencrypt/live/skrt.koaladev.de/privkey.pem", "utf8");
-const certificate = readFileSync("/etc/letsencrypt/live/skrt.koaladev.de/cert.pem", "utf8");
-const ca = readFileSync("/etc/letsencrypt/live/skrt.koaladev.de/chain.pem", "utf8");
-
-// set the values for the https-server up
+// set the values for the http-server up
 const app = express();
-const httpsServer = https.createServer({ key: privateKey, cert: certificate, ca: ca }, app);
-const port = 443;
-
+const httpServer = http.Server(app);
+const port = 3000;
+const __dirname = resolve();
 
 app.use(bodyParser.json());
 app.use(compression());
-app.use(helmet());
 app.use('/static', express.static('public'))
 app.use(express.urlencoded({ extended: true }));
 
 // frontend
 
 app.get('/', function (req, res) {
-    res.sendFile("html/index.html", {root: __dirname });
+    res.sendFile(join(__dirname, "/html/index.html"));
 });
 
 
 app.get('/value', function (req, res) {
-    res.sendFile("html/value.html", {root: __dirname });
+    res.sendFile(join(__dirname, "/html/value.html"));
 });
 
 
 app.get('/register', function (req, res) {
-    res.sendFile("html/register.html", {root: __dirname });
+    res.sendFile(join(__dirname, "/html/register.html"));
 });
 
 
 app.get('/balance', function (req, res) {
-    res.sendFile("html/balance.html", {root: __dirname });
+    res.sendFile(join(__dirname, "/html/balance.html"));
 });
 
 
 app.get('/transaction', function (req, res) {
-    res.sendFile("html/transaction.html", {root: __dirname });
+    res.sendFile(join(__dirname, "/html/transaction.html"));
 });
 
 
 app.get('/ranklist', async function (req, res) {
     res.status(200).json(await fetchRanklist());
-    // res.sendFile("html/ranklist.html", {root: __dirname });
+    // res.sendFile(join(__dirname, "/html/ranklist.html"));
 });
 
 // api
@@ -197,7 +186,7 @@ app.post('/api/mine/finish/skrt', async (req, res) => {
 
 
 // run the server
-httpsServer.listen(port, () => console.info(`SkrrrtCoin API running on port ${port}...`));
+httpServer.listen(port, () => console.info(`SkrrrtCoin API running on port ${port}...`));
 
 // create new mining-jobs on startup
 (async () => {

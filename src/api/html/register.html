@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline';">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" type="text/css" href="/static/global.min.css">
     <link rel="shortcut icon" type="image/png" href="/static/favicon.png"/>
-
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="/static/js/jquery-3.6.0.min.js"></script>
     
     <title>SkrrrtCoin - Register</title>
 </head>
@@ -84,7 +84,7 @@
             </section>
 
             <div class='button-section'>
-                <button class="register-button" onClick="postRegistration()">register</button>
+                <button class="register-button">register</button>
             </div>
         </div>
 
@@ -101,85 +101,8 @@
                 Private-Key => <span class="private-key"></span>
             </div>
         </div>
-
-        <script>
-            function postRegistration() {
-                // POST the data
-                $.ajax({
-                   type: "POST",
-                   url: "/api/registration",
-                   data: `username=${document.getElementById('name').value}&email=${document.getElementById('email').value}&ranklist=${document.getElementById('ranklist-checkbox').value}`,
-
-                   success: function (response) {
-                        if (response.succeeded) {
-                            $('.show-wallet-keys').removeClass("disabled");
-                            $('.register').addClass("disabled");
-                            
-                            document.getElementsByClassName("public-key")[0].innerHTML = response.public_key;
-                            document.getElementsByClassName("private-key")[0].innerHTML = response.private_key;
-                            return;
-                        }
-                        
-                        $('.show-wallet-keys').addClass("disabled");
-                        $('.register').addClass("disabled");
-                        return;
-                   }
-                });
-            }
-
-            $('#name').on('input', function (event) {
-                if (event.target.value.length <1) {
-                    $('.no-name-error').addClass('errored');
-                    $('.register-button').addClass("disabled");
-                    return;
-                }
-
-                $('.no-name-error').removeClass('errored');
-                $('.register-button').removeClass("disabled");
-
-                // check if the username is too long
-                if (event.target.value.length >18) {
-                    $('.name-too-long-error').addClass('errored');
-                    $('.register-button').addClass("disabled");
-                    return;
-                }
-
-                $('.name-too-long-error').removeClass('errored');
-                $('.register-button').removeClass("disabled");
-
-                // GET if the username already exists
-                $.ajax({
-                   type: "GET",
-                   url: "/api/check-registration",
-                   data: `name=${document.getElementById('name').value}`,
-
-                   success: function (response) {
-                        if (response.exists) {
-                            $('.user-exists-error').addClass('errored');
-                            $('.register-button').addClass("disabled");
-                            return;
-                        }
-
-                        $('.user-exists-error').removeClass('errored');
-                        $('.register-button').removeClass("disabled");
-                        return;
-                   }
-                });
-            });
-
-            $('#email').on('input', function (event) {
-                // check if the email is entered
-                if (event.target.value.length <1) {
-                    $('.no-email-error').addClass('errored');
-                    $('.register-button').addClass("disabled");
-                    return;
-                }
-
-                $('.no-email-error').removeClass('errored');
-                $('.register-button').removeClass("disabled");
-                return;
-            });
-        </script>
     </div>
+
+    <script src="/static/js/register.js"></script>
 </body>
 </html>
