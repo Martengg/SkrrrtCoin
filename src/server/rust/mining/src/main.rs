@@ -15,8 +15,8 @@ use serde::{Deserialize, Serialize};
 use std::fmt::Write;
 use thiserror::Error;
 
-const PUBLIC_KEY: &'static str = "123456789";
-const API_ENDPOINT: &'static str = "http://localhost:3000";
+const PUBLIC_KEY: &'static str = "193";
+const API_ENDPOINT: &'static str = "https://skrt.koaladev.de";
 
 #[derive(Debug, Error)]
 enum SkrtCoinError {
