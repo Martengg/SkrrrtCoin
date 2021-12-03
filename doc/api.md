@@ -5,7 +5,6 @@ transactions and so on...) of the coin and this is a little overview over all th
 and their uses
 
 ## user handling
-___
 
 - Registration:
   - path: `/api/registration`
@@ -62,7 +61,6 @@ ___
       time period
 
 ## mining
-___
 
 - Start Mining:
     - path: `/api/mine/start/skrt`
