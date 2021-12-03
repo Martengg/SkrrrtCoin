@@ -62,8 +62,8 @@ app.get('/transaction', function (req, res) {
 
 
 app.get('/ranklist', async function (req, res) {
-    res.status(200).json(await fetchRanklist());
-    // res.sendFile("html/ranklist.html", {root: __dirname });
+    // res.status(200).json(await fetchRanklist());
+    res.sendFile("html/ranklist.html", {root: __dirname });
 });
 
 // api

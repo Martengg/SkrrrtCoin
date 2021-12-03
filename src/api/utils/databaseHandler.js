@@ -190,7 +190,7 @@ export async function createNewUser(userName, eMail, rankList) {
     const hashedPrivateKey = hashPrivateKey(privateKey);
 
     // set the rank-list boolean
-    if (rankList === "on") {
+    if (rankList === "on" || rankList === true) {
         rankList = true;
     } else {
         rankList = false;
