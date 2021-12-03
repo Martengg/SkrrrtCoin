@@ -1,3 +1,7 @@
+# Editor directories
+.idea/
+.vscode/
+
 # Dependency directories
 node_modules/
 target/
@@ -8,11 +12,19 @@ sql/
 # configuration
 settings/
 
-# dependency files
+# JavaScript dependency files
 src/api/package-lock.json
 src/api/package.json
+
+# Rust dependency files
 Cargo.lock
 Cargo.toml
+
+# CSharp dependency files and directories
+bin/
+obj/
+*.csproj
+*.sln
 
 # styling
 *.sass
@@ -22,3 +34,11 @@ jquery-3.6.0.min.js
 
 # tests that are currently in debugging
 value.html
+
+# java libraries
+*.jar
+
+# all unfinished mining scripts (only for now)
+java/
+csharp/
+python/

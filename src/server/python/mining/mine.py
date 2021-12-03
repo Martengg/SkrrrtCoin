@@ -1,3 +1,6 @@
+
+# !!! it currently doesn't work !!!
+
 from requests import get, post
 from hashlib import md5
 from sys import maxsize
@@ -32,7 +35,7 @@ def crack_hash(nonce):
 
         if solution == maxsize: # check if the maxsize is reached
             break
-    
+    print(attempt)
     return solution
 
 
@@ -40,6 +43,7 @@ def post_data(uuid, solution):
     # prepare for posting
     url = API_ENDPOINT + FINISH_MINING_PATH
     posting_data = {"uuid": uuid, "solution": solution, "walletKey": WALLET_KEY}
+    print(posting_data)
 
     # post the data
     post(url, data=posting_data)
