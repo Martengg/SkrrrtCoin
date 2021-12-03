@@ -1,3 +1,5 @@
+# SkrrrtCoin - Mining
+
 ## How the mining works
 ___
 

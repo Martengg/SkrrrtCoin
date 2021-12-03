@@ -1,6 +1,6 @@
 # SkrrrtCoin - API
 
-the SkrrrtCoin API is primary for the mining (also for the website, user-information, 
+The SkrrrtCoin API is primary for the mining (also for the website, user-information, 
 transactions and so on...) of the coin and this is a little overview over all the urls 
 and their uses
 
@@ -15,12 +15,14 @@ ___
     `public_key` varchar(36), `private_key` varchar(36)
   - usage: here you can add an account to the SkrrrtCoin Database
 
+
 - Check registration:
     - path: `/api/check-registration`
     - method: `get`
     - required values (json): `name` varchar(36)
     - respond values (json): `exists` tinyint(1)
     - usage: checks if the account-name already exists
+
 
 - Balance:
     - path: `/api/balance`
@@ -29,6 +31,7 @@ ___
     - respond values (json): `succeeded` tinyint(1), `skrt` int(11) ( if succeeded is
       equal to false the value `skrt` won't show up )
     - usage: fetches the current amount of coins in the wallet of the given user
+
 
 - Transaction:
     - path: `/api/transaction`
@@ -40,12 +43,14 @@ ___
       equal to false the value `skrt` won't show up )
     - usage: makes a transaction from wallet to wallet ( mining included )
 
+
 - Blockchain:
     - path: `/api/chain`
     - method: `get`
     - required values: -
     - respond values (json): `ranklist` array
     - usage: sends the whole blockchain with a lot of information to the requester
+
 
 - Value:
     - path: `/api/value/skrt`
@@ -65,6 +70,7 @@ ___
     - required values: -
     - respond values (json): `uuid` varchar(36), `nonce` int(11)
     - usage: sends information about the requested mining-job
+
 
 - Finish Mining:
     - path: `/api/mine/finsih/skrt`
