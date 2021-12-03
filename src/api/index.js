@@ -171,7 +171,7 @@ app.get('/api/value/skrt', async function (req, res) {
 // get the mining-job
 app.get('/api/mine/start/skrt', async (req, res) => {
     const { uuid, nonceToMine } = await receiveNextMiningJob();
-    console.log(`⛏⛏⛏ ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()} --> new mining-job-requester`)
+    // console.log(`⛏⛏⛏ ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()} --> new mining-job-requester`)
     
     res.status(200).json({
         uuid: uuid,
@@ -183,7 +183,7 @@ app.get('/api/mine/start/skrt', async (req, res) => {
 // receive the result of the job
 app.post('/api/mine/finish/skrt', async (req, res) => {
     const { uuid, solution, walletKey } = req.body;
-    console.log(`💲💲💲 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()} --> mining-job-finisher`)
+    // console.log(`💲💲💲 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()} --> mining-job-finisher`)
 
     // check the result
     if(!await checkMiningResult(uuid, solution, walletKey)) {
