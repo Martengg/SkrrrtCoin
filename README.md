@@ -1,6 +1,6 @@
 # SkrrrtCoin - Documentation
 
-[SkrrrtCoin](https://skrt.koaladev.de)
+**[SkrrrtCoin](https://skrt.koaladev.de)**
 
 Versions:
 - **1.0.1 | Beta** [Current]
