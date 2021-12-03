@@ -1,5 +1,4 @@
 # SkrrrtCoin - Coin
-___
 
 The SkrrrtCoin is not a real crypto coin, but it is very close to one. The coin is not
 decentralized and has a blockchain, but the blocks for this chain are not build during

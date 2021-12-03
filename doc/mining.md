@@ -1,7 +1,6 @@
 # SkrrrtCoin - Mining
 
 ## How the mining works
-___
 
 1. fetch the needed data ( mining-job uuid and the nonce to mine ) from the api-endpoint
 
@@ -14,7 +13,6 @@ ___
 
 
 ## Run the scripts
-___
 
 If you don't want to code a script for yourself you can just copy the code from the
 server directory in your favourite language ( if the script exists in this language ).
@@ -29,7 +27,6 @@ Then simply run the script ( run it how you would normally run a script in this 
 Good Luck and Enjoy :)
 
 ## Improve your script/s
-___
 
 If you want to get one of the big players among the SkrrrtMiners I recommend improving the
 script, because especially our example scripts are intentionally not  optimized at all.
