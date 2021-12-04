@@ -39,6 +39,5 @@ value.html
 *.jar
 
 # all unfinished mining scripts (only for now)
-java/
 csharp/
 python/
