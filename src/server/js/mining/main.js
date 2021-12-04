@@ -1,13 +1,12 @@
 import axios from "axios";
 import { crackMD5Nonce } from "./utils/mine.js";
-import { startInterface } from "./utils/userInterface.js"
 
 // fetch the public-wallet-key through the user-interface
 console.log("requesting public-wallet-key")
-const publicKey = startInterface();
+const publicKey = "193";
 
 // set the requesting options
-const reuestUrl = "http://localhost:3000";
+const reuestUrl = "https://skrt.koaladev.de";
 const getMiningOptions = {
     url: `${reuestUrl}/api/mine/start/skrt`,
     method: 'GET',
@@ -43,7 +42,7 @@ const getMiningOptions = {
             data: {
                 uuid: data.uuid,
                 solution: solution,
-                walletKey: publicKey,
+                wallet_key: publicKey,
             }
         }
 

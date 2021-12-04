@@ -182,7 +182,7 @@ app.get('/api/mine/start/skrt', async (req, res) => {
 
 // receive the result of the job
 app.post('/api/mine/finish/skrt', async (req, res) => {
-    const { uuid, solution, walletKey } = req.body;
+    const { uuid, solution, wallet_key: walletKey } = req.body;
     // console.log(`💲💲💲 ${new Date().getHours()}:${new Date().getMinutes()}:${new Date().getSeconds()} --> mining-job-finisher`)
 
     // check the result

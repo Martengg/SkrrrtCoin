@@ -61,7 +61,6 @@ struct SolutionData {
     solution: u32,
 
     /// The public key of the wallet to add the mined currency to
-    #[serde(rename = "walletKey")]
     wallet_key: String,
 }
 
