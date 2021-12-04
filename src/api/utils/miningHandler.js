@@ -45,6 +45,13 @@ export async function checkJobAvailability() {
 
 
 export async function checkMiningResult(uuid, solution, publicKey) {
+    // check if the miner broke the rules
+    if (solution <1 || solution > Number.MAX_SAFE_INTEGER /2) {
+        // lock the post-connection for 60 seconds
+        await sleep(60_000);
+        return false;
+    }
+
     // fetch the nonce
     const nonce = await fetchNonceFromUuid(uuid, true);
 
