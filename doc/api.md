@@ -4,7 +4,7 @@ The SkrrrtCoin API is primary for the mining (also for the website, user-informa
 transactions and so on...) of the coin and this is a little overview over all the urls 
 and their uses
 
-## user handling
+## wallet handling
 
 - Registration:
   - path: `/api/registration`
@@ -42,6 +42,7 @@ and their uses
       equal to false the value `skrt` won't show up )
     - usage: makes a transaction from wallet to wallet ( mining included )
 
+## coin information
 
 - Blockchain:
     - path: `/api/chain`
