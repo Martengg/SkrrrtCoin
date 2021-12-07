@@ -1,0 +1,16 @@
+{
+  "name": "mining",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "type": "module",
+  
+  "scripts": {
+    "start": "node --max-old-space-size=16000 main.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.24.0"
+  }
+}
